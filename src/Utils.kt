@@ -2,6 +2,36 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 
+fun getIntList(stringList: List<String>): List<Int> {
+    val intList = mutableListOf<Int>()
+    stringList.forEach {
+        intList.add(it.toInt())
+    }
+
+    return intList
+}
+
+// helpers
+fun sumVals(valList: List<Int>): Int {
+    var total = 0
+    valList.forEach {
+        total += it
+    }
+
+    return total
+}
+
+// helpers
+fun sumValsString(valList: List<String>): Int {
+    val intList = mutableListOf<Int>()
+
+    valList.forEach {
+        intList.add(it.toInt())
+    }
+
+    return sumVals(intList)
+}
+
 /**
  * Reads lines from the given input txt file.
  */

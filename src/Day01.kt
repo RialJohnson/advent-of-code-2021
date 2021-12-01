@@ -1,27 +1,5 @@
 fun main() {
 
-    // helpers
-    fun sumVals(valList: List<Int>): Int {
-        var total = 0
-        valList.forEach {
-            total += it
-        }
-
-        return total
-    }
-
-    // helpers
-    fun sumValsString(valList: List<String>): Int {
-        val intList = mutableListOf<Int>()
-
-        valList.forEach {
-            intList.add(it.toInt())
-        }
-
-        return sumVals(intList)
-    }
-
-    // solutions
     fun part1(input: List<String>): Int {
         var count = 0
         var prev = Int.MAX_VALUE
