@@ -1,30 +1,24 @@
 fun main() {
-
-    fun flipBinary(binaryString: String): String {
-        val flippedBinary = java.lang.StringBuilder()
-
-        binaryString.forEach {
-            if (it == '0') flippedBinary.append('1') else flippedBinary.append('0')
-        }
-
-        return flippedBinary.toString()
-    }
-
-    fun getOxygenGenRating(input: List<String>): Int {
+    fun getRating(input: List<String>, takeDominantBit: Boolean): Int {
         var trimmedInput = input
         var index = 0
 
         while (trimmedInput.size > 1) {
             var zeroCount = 0
             var oneCount = 0
-            var dominantBit = '1'
+            var dominantBit: Char
 
             // find out if 0 or 1 is dominant for this position
             trimmedInput.forEach {
                 if (it[index] == '0') zeroCount++
                 if (it[index] == '1') oneCount++
             }
-            if (zeroCount > oneCount) dominantBit = '0'
+
+            dominantBit = if (zeroCount > oneCount) '0' else '1'
+
+            // flip the dominant bit if we want to take the non-dominant bit
+            // this works because if we don't want hte dominant bit, we also change the value of the tiebreak bit
+            if (!takeDominantBit) dominantBit = if (dominantBit == '0') '1' else '0'
 
             // only keep the strings that contain the dominant bit at this position
             trimmedInput = trimmedInput.filter {
@@ -34,35 +28,7 @@ fun main() {
             index++
         }
 
-        return Integer.parseInt(trimmedInput.first(), 2)
-    }
-
-    // basically the same as the oxygenGenRating but take the non-dominant bit
-    fun getScrubberRating(input: List<String>): Int {
-        var trimmedInput = input
-        var index = 0
-
-        while (trimmedInput.size > 1) {
-            var zeroCount = 0
-            var oneCount = 0
-            var dominantBit = '0'
-
-            // find out if 0 or 1 is dominant for this position
-            trimmedInput.forEach {
-                if (it[index] == '0') zeroCount++
-                if (it[index] == '1') oneCount++
-            }
-            if (oneCount < zeroCount) dominantBit = '1'
-
-            // only keep the strings that contain the dominant bit at this position
-            trimmedInput = trimmedInput.filter {
-                it[index] == dominantBit
-            }
-
-            index++
-        }
-
-        return Integer.parseInt(trimmedInput.first(), 2)
+        return trimmedInput.first().binaryToDecimal()
     }
 
     fun part1(input: List<String>): Int {
@@ -80,16 +46,15 @@ fun main() {
         }
 
         val epsilonRate = flipBinary(gammaRate.toString())
-        val gammaInt = Integer.parseInt(gammaRate.toString(), 2)
-        val epsilonInt = Integer.parseInt(epsilonRate, 2)
+        val gammaInt = gammaRate.toString().binaryToDecimal()
+        val epsilonInt = epsilonRate.binaryToDecimal()
 
         return gammaInt * epsilonInt
     }
 
     fun part2(input: List<String>): Int {
-
-        val oxygenGenRating = getOxygenGenRating(input)
-        val scrubberRating = getScrubberRating(input)
+        val oxygenGenRating = getRating(input, true)
+        val scrubberRating = getRating(input, false)
 
         return oxygenGenRating * scrubberRating
     }
