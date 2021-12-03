@@ -32,6 +32,19 @@ fun sumValsString(valList: List<String>): Int {
     return sumVals(intList)
 }
 
+
+fun flipBinary(binaryString: String): String {
+    val flippedBinary = java.lang.StringBuilder()
+
+    binaryString.forEach {
+        if (it == '0') flippedBinary.append('1') else flippedBinary.append('0')
+    }
+
+    return flippedBinary.toString()
+}
+
+fun String.binaryToDecimal(): Int = Integer.parseInt(this, 2)
+
 /**
  * Reads lines from the given input txt file.
  */
