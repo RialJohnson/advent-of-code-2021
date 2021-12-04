@@ -1,18 +1,8 @@
 fun main() {
 
-    fun part1(input: List<String>): Int {
-
-        var sumOfBingoBoard = 0
-        var score = 0
-
-        val numberOrder = input.first()
-        val numberOrderList = numberOrder.split(",")
-
-        val markedBoard = mutableListOf<MutableList<MutableList<Boolean>>>()
-
+    fun getGroupedBingoBoards(input: List<String>): MutableList<List<MutableList<Int>>> {
         // remove the number order and newline to just get the bingo boards
         val allBingoBoards = input.drop(2)
-
         val formattedBingoBoards = mutableListOf<MutableList<Int>>()
 
         allBingoBoards.forEach { bingoLine ->
@@ -26,18 +16,35 @@ fun main() {
             }
         }
 
-        val groupedBingoBoards = formattedBingoBoards.chunked(5).toMutableList()
+        return formattedBingoBoards.chunked(5).toMutableList()
+    }
+
+    fun getMarkedBoard(groupedBoards: MutableList<List<MutableList<Int>>>): MutableList<MutableList<MutableList<Boolean>>>{
+        val markedBoard = mutableListOf<MutableList<MutableList<Boolean>>>()
+        val falseList = listOf(false, false, false, false, false)
 
         // initialize our marked board with as many bingo boards as there actually are
-        groupedBingoBoards.forEach {
+        groupedBoards.forEach {
             markedBoard.add(mutableListOf(
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false)
+                falseList.toMutableList(),
+                falseList.toMutableList(),
+                falseList.toMutableList(),
+                falseList.toMutableList(),
+                falseList.toMutableList()
             ))
         }
+
+        return markedBoard
+    }
+
+    fun part1(input: List<String>): Int {
+        var sumOfBingoBoard = 0
+        var score = 0
+        val numberOrder = input.first()
+        val numberOrderList = numberOrder.split(",")
+
+        val groupedBingoBoards = getGroupedBingoBoards(input)
+        val markedBoard = getMarkedBoard(groupedBingoBoards)
 
         run mainLoop@{
             numberOrderList.forEach {
@@ -46,12 +53,12 @@ fun main() {
                 groupedBingoBoards.forEachIndexed { index1, board ->
                     board.forEachIndexed { index2, line ->
                         line.forEachIndexed { index3, singleVal ->
-                            if (singleVal == currentBingoNumber) markedBoard[index1][index2][index3] = true //
+                            if (singleVal == currentBingoNumber) markedBoard[index1][index2][index3] = true
                         }
                     }
                 }
 
-                // check for bings
+                // check for bingos
                 var anyBingo = false
                 var boardNumber = -1
                 markedBoard.forEachIndexed { index, board ->
@@ -100,40 +107,11 @@ fun main() {
         var sumOfBingoBoard = 0
         var score = 0
         var finalBoardNumber = -1
-
         val numberOrder = input.first()
         val numberOrderList = numberOrder.split(",")
 
-        val markedBoard = mutableListOf<MutableList<MutableList<Boolean>>>()
-
-        // remove the number order and newline to just get the bingo boards
-        val allBingoBoards = input.drop(2)
-
-        val formattedBingoBoards = mutableListOf<MutableList<Int>>()
-
-        allBingoBoards.forEach { bingoLine ->
-            if (bingoLine.isNotEmpty()) {
-                val stringList = bingoLine.chunked(3) // split into a list of strings of only the individual ints
-                val intRow = mutableListOf<Int>()
-                stringList.forEach { singleVal ->
-                    intRow.add(singleVal.filter { !it.isWhitespace() }.toInt()) // remove spaces before converting to int
-                }
-                formattedBingoBoards.add(intRow)
-            }
-        }
-
-        val groupedBingoBoards = formattedBingoBoards.chunked(5).toMutableList()
-
-        // initialize our marked board with as many bingo boards as there actually are
-        groupedBingoBoards.forEach {
-            markedBoard.add(mutableListOf(
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false),
-                mutableListOf(false, false, false, false, false)
-            ))
-        }
+        val groupedBingoBoards = getGroupedBingoBoards(input)
+        val markedBoard = getMarkedBoard(groupedBingoBoards)
 
         run mainLoop@{
             numberOrderList.forEach {
@@ -142,14 +120,13 @@ fun main() {
                 groupedBingoBoards.forEachIndexed { index1, board ->
                     board.forEachIndexed { index2, line ->
                         line.forEachIndexed { index3, singleVal ->
-                            if (singleVal == currentBingoNumber) markedBoard[index1][index2][index3] = true //
+                            if (singleVal == currentBingoNumber) markedBoard[index1][index2][index3] = true
                         }
                     }
                 }
 
                 // check for bingos
                 var numBingos = 0
-                var boardNumber = -1
                 markedBoard.forEachIndexed { index, board ->
                     var localBingo = false
                     // check for bingos along rows
@@ -158,7 +135,6 @@ fun main() {
                             if (row.all { boolVal -> boolVal == true }) {
                                 numBingos++
                                 localBingo = true
-                                boardNumber = index
                             }
                         }
                     }
@@ -168,7 +144,6 @@ fun main() {
                         for (i in 0..4) {
                             if (!localBingo && board.all { it[i] == true }) {
                                 numBingos++
-                                boardNumber = index
                             }
                         }
                     }
@@ -178,7 +153,6 @@ fun main() {
                 if (groupedBingoBoards.size - numBingos == 1) {
 
                     // find the board without a bingo
-
                     markedBoard.forEachIndexed { index, board ->
                         var anyBingo = false
                         // check for bingos along rows
@@ -204,7 +178,6 @@ fun main() {
 
                 // our final board got a bingo, so we can score it
                 if (groupedBingoBoards.size - numBingos == 0) {
-
                     val bingoBoard = groupedBingoBoards[finalBoardNumber]
                     bingoBoard.forEachIndexed { rowIndex, row ->
                         row.forEachIndexed { singleValIndex, singleVal ->
@@ -218,10 +191,8 @@ fun main() {
                 }
             }
         }
-
         return score
     }
-
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day04_test")
