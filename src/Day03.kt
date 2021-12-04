@@ -17,7 +17,7 @@ fun main() {
             dominantBit = if (zeroCount > oneCount) '0' else '1'
 
             // flip the dominant bit if we want to take the non-dominant bit
-            // this works because if we don't want hte dominant bit, we also change the value of the tiebreak bit
+            // this works because if we don't want the dominant bit, we also change the value of the tiebreak bit
             if (!takeDominantBit) dominantBit = if (dominantBit == '0') '1' else '0'
 
             // only keep the strings that contain the dominant bit at this position
