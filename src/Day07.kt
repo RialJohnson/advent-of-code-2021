@@ -1,3 +1,4 @@
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 fun main() {
@@ -27,24 +28,30 @@ fun main() {
     // mean
     fun part2(input: List<String>): Long {
         val crabPositions = getIntList(input.first().split(","))
-        val average = crabPositions.average().toInt()
+
+        val averageTruncate = crabPositions.average().toInt()
+        val averageRound = crabPositions.average().roundToInt()
 
         // count distance from median for each value
-        var count: Long = 0
+        var truncateCount: Long = 0
+        var roundCount: Long = 0
         crabPositions.forEach {
-            val distance = kotlin.math.abs(it - average) + 1 // add one to get the sum of a number and all below it
-            val sumOfValAndBelow = ((distance * (distance - 1)) / 2)
-            count += sumOfValAndBelow // the sum of a number and all ints below it
-        }
-        println(count)
+            val truncateDistance = kotlin.math.abs(it - averageTruncate) + 1 // add one to get the sum of a number and all below it
+            val sumOfValAndBelow = ((truncateDistance * (truncateDistance - 1)) / 2)
+            truncateCount += sumOfValAndBelow // the sum of a number and all ints below it
 
-        return count
+            val roundDistance = kotlin.math.abs(it - averageRound) + 1 // add one to get the sum of a number and all below it
+            val sumOfValAndBelowRound = ((roundDistance * (roundDistance - 1)) / 2)
+            roundCount += sumOfValAndBelowRound // the sum of a number and all ints below it
+        }
+
+        return minOf(truncateCount, roundCount)
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day07_test")
     check(part1(testInput) == 37)
-    // check(part2(testInput) == (168).toLong())
+    check(part2(testInput) == (168).toLong())
 
     // print solutions
     val input = readInput("Day07")
