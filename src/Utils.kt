@@ -2,6 +2,11 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 
+// checks if the unique chars are the exact same in a string, regardless of order
+fun String.charsAreTheSame(stringToMatch: String): Boolean {
+    return this.toList().containsAll(stringToMatch.toList()) && this.length == stringToMatch.length
+}
+
 fun getIntList(stringList: List<String>): List<Int> {
     val intList = mutableListOf<Int>()
     stringList.forEach {
