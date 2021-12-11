@@ -7,6 +7,18 @@ fun String.charsAreTheSame(stringToMatch: String): Boolean {
     return this.toList().containsAll(stringToMatch.toList()) && this.length == stringToMatch.length
 }
 
+fun get2DMutableIntList(input: List<String>): MutableList<MutableList<Int>> {
+    val intList = mutableListOf<MutableList<Int>>()
+    input.forEach {
+        val thisLine = mutableListOf<Int>()
+        it.forEach { char ->
+            thisLine.add(char.toString().toInt())
+        }
+        intList.add(thisLine)
+    }
+    return intList
+}
+
 fun getIntList(stringList: List<String>): List<Int> {
     val intList = mutableListOf<Int>()
     stringList.forEach {
